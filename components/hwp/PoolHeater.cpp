@@ -303,10 +303,8 @@ bool PoolHeater::is_update_active() { return this->update_active_; }
  */
 climate::ClimateTraits PoolHeater::traits() {
     auto traits = climate::ClimateTraits();
-    traits.set_supports_current_temperature(true);
-    traits.set_supports_action(true);
-    traits.set_supports_two_point_target_temperature(false);
-    traits.set_supports_current_humidity(false);
+    traits.add_feature_flags(climate::CLIMATE_SUPPORTS_CURRENT_TEMPERATURE |
+                             climate::CLIMATE_SUPPORTS_ACTION);
 
     // Populate supported HVAC/fan modes from frame traits.
     this->driver_.traits(traits, this->hp_data_);
