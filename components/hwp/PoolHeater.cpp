@@ -42,6 +42,14 @@
 #include "esphome/components/logger/logger.h"
 #endif
 #include <cmath>
+
+#ifdef HWP_DEBUG_LOGS
+#define HWP_LOGD ESP_LOGD
+#define HWP_LOGVV ESP_LOGVV
+#else
+#define HWP_LOGD(...)
+#define HWP_LOGVV(...)
+#endif
 namespace esphome {
 namespace hwp {
 
@@ -82,6 +90,12 @@ void PoolHeater::set_heater_status_solution_sensor(text_sensor::TextSensor* sens
 }
 
 void PoolHeater::update() {
+    const uint32_t now = millis();
+    if ((now - this->last_update_ms_) < min_update_interval_ms_) {
+        return;
+    }
+    this->last_update_ms_ = now;
+
     //////////////////////////////////////////////
     // Transfer data to climate                 //
     //////////////////////////////////////////////

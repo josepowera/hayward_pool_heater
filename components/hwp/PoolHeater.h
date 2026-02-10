@@ -230,6 +230,8 @@ class PoolHeater : public climate::Climate, public PollingComponent {
     std::string actual_status_;
     bool passive_mode_ = true;
     bool update_active_ = false;
+    uint32_t last_update_ms_{0};
+    static constexpr uint32_t min_update_interval_ms_ = 250;
     text_sensor::TextSensor* actual_status_sensor_{nullptr};
     text_sensor::TextSensor* heater_status_code_sensor_{nullptr};
     text_sensor::TextSensor* heater_status_description_sensor_{nullptr};
