@@ -44,6 +44,9 @@
 #include "esphome/core/component.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/macros.h"
+#include <iomanip>
+#include <sstream>
+#include <unordered_map>
 
 /**
  * @brief Describes the structure and timing of packets on the NET port.
@@ -259,6 +262,7 @@ class PoolHeater : public climate::Climate, public PollingComponent {
     select::Select* d06_defrost_eco_mode_;
     number::Number* d05_min_economy_defrost_time_minutes_;
     number::Number* u02_pulses_per_liter_;
+    std::unordered_map<const void*, std::string> last_published_values_;
 
     // Specific temperature sensors
     sensor::Sensor* t01_temperature_suction_; ///< Suction temperature sensor (T01)
@@ -353,11 +357,37 @@ class PoolHeater : public climate::Climate, public PollingComponent {
 
     template <typename T, typename U>
     inline void call_publish_sensor_value(const U& value, T* sensor) {
+        const std::string new_key = this->value_to_cache_key(value);
+        auto it = this->last_published_values_.find(sensor);
+        if (it != this->last_published_values_.end() && it->second == new_key) {
+            return;
+        }
+        this->last_published_values_[sensor] = new_key;
         sensor->publish_state(value);
     }
     template <typename T>
     inline void call_publish_sensor_value(const optional<T>& value, T& target) {
         target = value.value_or(target);
+    }
+
+    static std::string value_to_cache_key(const std::string& value) { return value; }
+    static std::string value_to_cache_key(const char* value) {
+        return value == nullptr ? std::string{} : std::string(value);
+    }
+    static std::string value_to_cache_key(bool value) { return value ? "1" : "0"; }
+    static std::string value_to_cache_key(float value) {
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(3) << value;
+        return oss.str();
+    }
+    static std::string value_to_cache_key(double value) {
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(3) << value;
+        return oss.str();
+    }
+    template <typename T>
+    static std::string value_to_cache_key(const T& value) {
+        return to_string(value);
     }
 };
 } // namespace hwp
