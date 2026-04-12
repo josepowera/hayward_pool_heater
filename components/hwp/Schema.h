@@ -238,7 +238,8 @@ class FanMode {
         auto custom = call.get_custom_fan_mode();
         if (custom != nullptr && custom[0] != '\0') {
         //if (!custom.empty()) {
-            auto from_custom = from_custom_fan_mode(std::string(custom.c_str()));
+            auto from_custom = from_custom_fan_mode(std::string(custom));
+            //auto from_custom = from_custom_fan_mode(std::string(custom.c_str()));
             if (from_custom.has_value()) {
               return from_custom;
             }
