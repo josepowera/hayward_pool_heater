@@ -236,7 +236,8 @@ class FanMode {
      */
     static optional<FanMode> from_call(const climate::ClimateCall& call) {
         auto custom = call.get_custom_fan_mode();
-        if (!custom.empty()) {
+        if (custom != nullptr && custom[0] != '\0') {
+        //if (!custom.empty()) {
             auto from_custom = from_custom_fan_mode(std::string(custom.c_str()));
             if (from_custom.has_value()) {
               return from_custom;
