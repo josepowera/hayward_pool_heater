@@ -95,17 +95,20 @@ void u02_pulses_per_liter_number::control(float value) {
 
 void d06_defrost_eco_mode_select::control(const std::string& value) {
     HWPCall call_data = this->get_parent()->instantiate_call();
-    call_data.d06_defrost_eco_mode = make_optional(value);
+    //call_data.d06_defrost_eco_mode = make_optional(value);
+    call_data.d06_defrost_eco_mode = DefrostEcoMode::from_string(value);
     this->get_parent()->control(call_data);
 }
 void u01_flow_meter_select::control(const std::string& value) {
     HWPCall call_data = this->get_parent()->instantiate_call();
-    call_data.u01_flow_meter = make_optional(value);
+    //call_data.u01_flow_meter = make_optional(value);
+    call_data.u01_flow_meter = FlowMeterEnable::from_string(value);
     this->get_parent()->control(call_data);
 }
 void h02_mode_restrictions_select::control(const std::string& value) {
     HWPCall call_data = this->get_parent()->instantiate_call();
-    call_data.h02_mode_restrictions = make_optional(value);
+    //call_data.h02_mode_restrictions = make_optional(value);
+    call_data.h02_mode_restrictions = HeatPumpRestrict::from_string(value);
     this->get_parent()->control(call_data);
 }
 
